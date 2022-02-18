@@ -1,5 +1,8 @@
 package com.edersondev.apitest.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +27,13 @@ public class UserController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
 		return ResponseEntity.ok().body(mapper.map(service.findById(id),UserDTO.class));
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<UserDTO>> findAll() {
+		List<UserDTO> list = service.findAll()
+				.stream().map(entity -> mapper.map(entity,UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok().body(list);
 	}
 }

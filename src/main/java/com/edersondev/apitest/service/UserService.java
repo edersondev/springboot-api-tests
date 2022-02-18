@@ -1,5 +1,6 @@
 package com.edersondev.apitest.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,9 @@ public class UserService {
 	public User findById(Integer id) {
 		Optional<User> user = repository.findById(id);
 		return user.orElseThrow(() -> new ResourceNotFoundException("Objeto não encontrado"));
+	}
+	
+	public List<User> findAll() {
+		return repository.findAll();
 	}
 }
