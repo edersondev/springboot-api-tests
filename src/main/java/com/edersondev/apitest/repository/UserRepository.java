@@ -8,4 +8,5 @@ import com.edersondev.apitest.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	boolean existsByEmail(String email);
 }

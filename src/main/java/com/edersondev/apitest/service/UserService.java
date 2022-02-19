@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.edersondev.apitest.domain.User;
 import com.edersondev.apitest.domain.dto.UserDTO;
 import com.edersondev.apitest.repository.UserRepository;
+import com.edersondev.apitest.service.exception.DataIntegrityException;
 import com.edersondev.apitest.service.exception.ResourceNotFoundException;
 
 @Service
@@ -31,6 +32,14 @@ public class UserService {
 	}
 	
 	public User create(UserDTO obj) {
+		this.existsByEmail(obj.getEmail());
 		return repository.save(mapper.map(obj, User.class));
+	}
+	
+	public void existsByEmail(String email) {
+		boolean existsEmail = repository.existsByEmail(email);
+		if(existsEmail) {
+			throw new DataIntegrityException("E-mail já cadastrado no sistema");
+		}
 	}
 }
