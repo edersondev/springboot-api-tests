@@ -32,14 +32,14 @@ public class UserService {
 	}
 	
 	public User create(UserDTO obj) {
-		this.existsByEmail(obj);
+		existsByEmail(obj);
 		return repository.save(mapper.map(obj, User.class));
 	}
 	
 	public void update(Integer id, UserDTO obj) {
 		findById(id);
 		obj.setId(id);
-		this.existsByEmail(obj);
+		existsByEmail(obj);
 		repository.save(mapper.map(obj, User.class));
 	}
 	
