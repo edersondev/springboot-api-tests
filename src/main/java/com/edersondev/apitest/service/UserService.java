@@ -32,13 +32,20 @@ public class UserService {
 	}
 	
 	public User create(UserDTO obj) {
-		this.existsByEmail(obj.getEmail());
+		this.existsByEmail(obj);
 		return repository.save(mapper.map(obj, User.class));
 	}
 	
-	public void existsByEmail(String email) {
-		boolean existsEmail = repository.existsByEmail(email);
-		if(existsEmail) {
+	public void update(Integer id, UserDTO obj) {
+		this.findById(id);
+		obj.setId(id);
+		this.existsByEmail(obj);
+		repository.save(mapper.map(obj, User.class));
+	}
+	
+	public void existsByEmail(UserDTO obj) {
+		Optional<User> user = repository.findByEmail(obj.getEmail());
+		if(user.isPresent() && !user.get().getId().equals(obj.getId())) {
 			throw new DataIntegrityException("E-mail já cadastrado no sistema");
 		}
 	}
