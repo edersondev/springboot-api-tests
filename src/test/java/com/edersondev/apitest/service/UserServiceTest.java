@@ -1,15 +1,17 @@
 package com.edersondev.apitest.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,10 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.edersondev.apitest.domain.User;
 import com.edersondev.apitest.domain.dto.UserDTO;
 import com.edersondev.apitest.repository.UserRepository;
+import com.edersondev.apitest.service.exception.ResourceNotFoundException;
 
 @SpringBootTest
 class UserServiceTest {
 	
+	private static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 	private static final Integer ID			= 1;
 	private static final String NAME		= "John Snow";
 	private static final String EMAIL		= "john@gmail.com";
@@ -46,15 +50,26 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testFindById() {
-		Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+	void whenFindByIdThenReturnAnUserInstance() {
+		when(repository.findById(anyInt())).thenReturn(optionalUser);
 		User response = service.findById(ID);
 		
-		Assertions.assertNotNull(response);
-		Assertions.assertEquals(User.class, response.getClass());
-		Assertions.assertEquals(ID, response.getId());
-		Assertions.assertEquals(NAME, response.getName());
-		Assertions.assertEquals(EMAIL, response.getEmail());
+		assertNotNull(response);
+		assertEquals(User.class, response.getClass());
+		assertEquals(ID, response.getId());
+		assertEquals(NAME, response.getName());
+		assertEquals(EMAIL, response.getEmail());
+	}
+	
+	@Test
+	void whenFindByIdThenReturnAnObjectNotFoundException() {
+		when(repository.findById(anyInt())).thenThrow(new ResourceNotFoundException(OBJETO_NAO_ENCONTRADO));
+		try {
+			service.findById(ID);
+		} catch (Exception ex) {
+			assertEquals(ResourceNotFoundException.class,ex.getClass());
+			assertEquals(OBJETO_NAO_ENCONTRADO,ex.getMessage());
+		}
 	}
 
 	@Test
