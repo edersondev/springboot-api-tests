@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.edersondev.apitest.domain.User;
 import com.edersondev.apitest.domain.dto.UserDTO;
 import com.edersondev.apitest.repository.UserRepository;
+import com.edersondev.apitest.service.exception.DataIntegrityException;
 import com.edersondev.apitest.service.exception.ResourceNotFoundException;
 
 @SpringBootTest
@@ -100,6 +102,19 @@ class UserServiceTest {
 		assertEquals(NAME,response.getName());
 		assertEquals(EMAIL,response.getEmail());
 		assertEquals(PASSWORD,response.getPassword());
+	}
+	
+	@Test
+	void whenCreateThenReturnDataIntegrityException() {
+		when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+		
+		try {
+			optionalUser.get().setId(2);
+			service.create(userDTO);
+		} catch (Exception ex) {
+			assertEquals(DataIntegrityException.class,ex.getClass());
+			assertEquals("E-mail já cadastrado no sistema",ex.getMessage());
+		}
 	}
 
 	@Test
