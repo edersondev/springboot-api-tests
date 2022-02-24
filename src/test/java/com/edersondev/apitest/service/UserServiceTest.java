@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 import java.util.List;
 import java.util.Optional;
@@ -89,8 +90,16 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testCreate() {
-		fail("Not yet implemented");
+	void whenCreateThenReturnSuccess() {
+		when(repository.save(any())).thenReturn(user);
+		User response = service.create(userDTO);
+		
+		assertNotNull(response);
+		assertEquals(User.class,response.getClass());
+		assertEquals(ID,response.getId());
+		assertEquals(NAME,response.getName());
+		assertEquals(EMAIL,response.getEmail());
+		assertEquals(PASSWORD,response.getPassword());
 	}
 
 	@Test
