@@ -7,6 +7,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
@@ -158,8 +161,11 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testDelete() {
-		fail("Not yet implemented");
+	void whenDeleteReturnSuccess() {
+		when(repository.findById(anyInt())).thenReturn(optionalUser);
+		doNothing().when(repository).deleteById(anyInt());
+		service.delete(ID);
+		verify(repository,times(1)).deleteById(anyInt());
 	}
 
 	@Test
