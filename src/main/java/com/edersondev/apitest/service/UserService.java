@@ -36,11 +36,11 @@ public class UserService {
 		return repository.save(mapper.map(obj, User.class));
 	}
 	
-	public void update(Integer id, UserDTO obj) {
+	public User update(Integer id, UserDTO obj) {
 		findById(id);
 		obj.setId(id);
 		existsByEmail(obj);
-		repository.save(mapper.map(obj, User.class));
+		return repository.save(mapper.map(obj, User.class));
 	}
 	
 	public void delete(Integer id) {
