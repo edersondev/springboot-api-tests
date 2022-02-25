@@ -131,6 +131,31 @@ class UserServiceTest {
 		assertEquals(EMAIL,response.getEmail());
 		assertEquals(PASSWORD,response.getPassword());
 	}
+	
+	@Test
+	void whenUpdateThenReturnDataIntegrityException() {
+		when(repository.findById(anyInt())).thenReturn(optionalUser);
+		when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+		
+		try {
+			optionalUser.get().setId(2);
+			service.update(ID,userDTO);
+		} catch (Exception ex) {
+			assertEquals(DataIntegrityException.class,ex.getClass());
+			assertEquals("E-mail já cadastrado no sistema",ex.getMessage());
+		}
+	}
+	
+	@Test
+	void whenUpdateThenReturnResourceNotFoundException() {
+		when(repository.findById(anyInt())).thenThrow(new ResourceNotFoundException(OBJETO_NAO_ENCONTRADO));
+		try {
+			service.update(ID,userDTO);
+		} catch (Exception ex) {
+			assertEquals(ResourceNotFoundException.class,ex.getClass());
+			assertEquals(OBJETO_NAO_ENCONTRADO,ex.getMessage());
+		}
+	}
 
 	@Test
 	void testDelete() {
