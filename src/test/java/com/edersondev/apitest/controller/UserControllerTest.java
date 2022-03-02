@@ -2,9 +2,12 @@ package com.edersondev.apitest.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -90,18 +93,39 @@ class UserControllerTest {
 	}
 
 	@Test
-	void testCreate() {
-		fail("Not yet implemented");
+	void whenCreateThenReturnCreated() {
+		when(service.create(any())).thenReturn(user);
+		when(mapper.map(any(), any())).thenReturn(userDTO);
+		
+		ResponseEntity<UserDTO> response = controller.create(userDTO);
+		
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertNotNull(response.getHeaders().get("Location"));
 	}
 
 	@Test
-	void testUpdate() {
-		fail("Not yet implemented");
+	void whenUpdateThenReturnSuccess() {
+		when(service.update(anyInt(), any())).thenReturn(user);
+		
+		ResponseEntity<Void> response = controller.update(ID, userDTO);
+		
+		assertNotNull(response);
+		assertNull(response.getBody());
+		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		assertEquals(ResponseEntity.class, response.getClass());
 	}
 
 	@Test
-	void testDelete() {
-		fail("Not yet implemented");
+	void whenDeleteThenReturnSuccess() {
+		doNothing().when(service).delete(anyInt());
+		
+		ResponseEntity<Void> response = controller.delete(ID);
+		
+		assertNotNull(response);
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		verify(service,times(1)).delete(anyInt());
 	}
 	
 	private void starUser() {
