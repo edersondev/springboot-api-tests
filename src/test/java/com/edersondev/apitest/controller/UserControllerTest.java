@@ -36,8 +36,8 @@ class UserControllerTest {
 	private static final String EMAIL		= "john@gmail.com";
 	private static final String PASSWORD	= "123";
 	
-	private User user;
-	private UserDTO userDTO;
+	private User user = new User();
+	private UserDTO userDTO = new UserDTO();
 
 	@InjectMocks
 	private UserController controller;
